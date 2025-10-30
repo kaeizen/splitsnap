@@ -1,0 +1,18 @@
+
+form {
+  margin-bottom: 16px;
+}
+
+nz-list-item {
+  padding: 4px 0 !important;
+
+  .ant-btn.ant-btn-circle {
+    min-width: 14px;
+    height: 14px;
+    width: 14px;
+
+    nz-icon {
+      font-size: 8px;
+    }
+  }
+}

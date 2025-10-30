@@ -1,0 +1,23 @@
+.grid-container {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr 2fr;
+    grid-auto-flow: row dense;
+    row-gap: 12px;
+  }
+  .grid-item-default {
+    grid-row: span 1;
+  }
+  .grid-item-large {
+    grid-row: span 3;
+    grid-column-start: 2;
+  }
+}
+nz-card ::ng-deep .ant-card-body:has(ss-settlement) {
+  padding: 12px 24px;
+}/*# sourceMappingURL=main.component.css.map */

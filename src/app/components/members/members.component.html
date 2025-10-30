@@ -1,0 +1,23 @@
+<nz-card nzTitle="Members">
+	<form (ngSubmit)="submitForm()">
+		<div nz-row [nzGutter]="[16, 8]">
+			<div class="gutter-row" nz-col [nzSpan]="24" [nzMd]="18">
+				<input nz-input placeholder="Name" name="newName" [(ngModel)]="newName" required />
+			</div>
+			<div class="gutter-row" nz-col [nzSpan]="24" [nzMd]="6">
+				<button nz-button type="submit" nzType="primary" nzBlock>Add</button>
+			</div>
+		</div>
+	</form>
+
+	<nz-list nzSize="small">
+		@for (member of store.members(); track $index) {
+			<nz-list-item>
+				<span>{{ member.name }}</span>
+				<button nz-button nzType="default" nzDanger nzShape="circle" nzSize="small" (click)="onDelete(member.id)">
+					<nz-icon nzType="close" nzTheme="outline" />
+				</button>
+			</nz-list-item>
+		}
+	</nz-list>
+</nz-card>

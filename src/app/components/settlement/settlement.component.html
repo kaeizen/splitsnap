@@ -1,0 +1,48 @@
+<nz-collapse [nzBordered]="false">
+	@for (panel of panels; track panel) {
+	<nz-collapse-panel [nzHeader]="panel.name" [nzActive]="panel.active">
+		<div nz-flex [nzVertical]="true" [nzGap]="8">
+			<nz-list nzBordered nzSize="small">
+				<nz-list-header>
+					<span>Owes</span>
+					<button nz-button nzType="primary" nzSize="small" style="float:right;">Settle</button>
+				</nz-list-header>
+				<nz-list-item>
+					<span>Member 1</span>
+
+					<span>₱ 250</span>
+				</nz-list-item>
+			</nz-list>
+			<nz-list nzBordered nzSize="small">
+				<nz-list-header>Is Owed</nz-list-header>
+				<nz-list-item>
+					<span>Member 1</span>
+
+					<span>₱ 250</span>
+				</nz-list-item>
+			</nz-list>
+    	</div>
+	</nz-collapse-panel>
+	}
+</nz-collapse>
+
+<!-- <nz-list nzSize="small">
+	<nz-list-item>
+		<span>Member 1</span>
+		<button nz-button nzType="default" nzDanger nzShape="circle" nzSize="small">
+			<nz-icon nzType="close" nzTheme="outline" />
+		</button>
+	</nz-list-item>
+	<nz-list-item>
+		<span>Member 2</span>
+		<button nz-button nzType="default" nzDanger nzShape="circle" nzSize="small">
+			<nz-icon nzType="close" nzTheme="outline" />
+		</button>
+	</nz-list-item>
+	<nz-list-item>
+		<span>Member 3</span>
+		<button nz-button nzType="default" nzDanger nzShape="circle" nzSize="small">
+			<nz-icon nzType="close" nzTheme="outline" />
+		</button>
+	</nz-list-item>
+</nz-list> -->

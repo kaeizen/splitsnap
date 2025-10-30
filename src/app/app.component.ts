@@ -1,12 +1,27 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core'
+import { FooterComponent, HeaderComponent } from './components';
+import { MainComponent } from './main/main.component';
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+	selector: 'ss-root',
+	imports: [
+		HeaderComponent,
+		FooterComponent,
+		MainComponent
+	],
+	template: `
+		<header>
+			<ss-header />
+		</header>
+		<main>
+			<ss-main />
+		</main>
+		<footer>
+			<ss-footer />
+		</footer>
+	`,
+	styles: [],
 })
 export class AppComponent {
-  title = 'quicksplit';
+	title = 'SplitSnap';
 }

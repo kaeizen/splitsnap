@@ -1,0 +1,22 @@
+nz-list-item {
+  padding: 4px 0 !important;
+  align-items: flex-start;
+}
+
+nz-collapse {
+  background-color: transparent !important;
+  width: 100%;
+}
+nz-collapse ::ng-deep .ant-collapse-header {
+  padding: 0 !important;
+}
+nz-collapse ::ng-deep .ant-collapse-arrow {
+  margin-right: 4px !important;
+}
+nz-collapse ::ng-deep .ant-collapse-content-box, nz-collapse ::ng-deep .ant-table-thead tr th, nz-collapse ::ng-deep .ant-table-tbody tr td {
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 11px;
+}
+nz-collapse ::ng-deep .ant-table-tbody tr:last-child td {
+  border-bottom-color: transparent;
+}/*# sourceMappingURL=expense-list.component.css.map */
