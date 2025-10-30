@@ -12,7 +12,7 @@ export type Expense = {
 	amount: number,
 	date: Date,
 	splitMode: string,
-	membersToPay: MemberWithAmountPercent[],
-	membersPaid: MemberWithAmount[]
+	membersToPay: { [ key: string ]: MemberWithAmountPercent },
+	membersPaid: { [ key: string ]: MemberWithAmount }
 }
 

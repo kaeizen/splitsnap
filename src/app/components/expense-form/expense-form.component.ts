@@ -1,4 +1,4 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, signal, TemplateRef, ViewChild, WritableSignal } from '@angular/core';
 import {FormsModule } from '@angular/forms';
 
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -11,6 +11,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
+import { NzMessageComponent, NzMessageService } from 'ng-zorro-antd/message';
 import { MemberStore, ExpenseStore } from '../../store/store';
 import { Member,
 	 MemberWithAmount,
@@ -45,159 +46,169 @@ export class ExpenseFormComponent {
 	formatterPercent = (value: number): string => `${value}%`;
 	parserPercent = (value: string): number => +value?.replace('%', '');
 
-	membersToPay = signal<MemberWithAmountPercent[]>( [] );
-	membersPaid = signal<MemberWithAmount[]>( [] );
+	membersToPay = signal<{ [ key: string ]: MemberWithAmountPercent }>( {} );
+	membersPaid = signal<{ [ key: string ]: MemberWithAmount }>( {} );
+	membersToPayArr = computed(() => Object.values(this.membersToPay()));
+	membersPaidArr = computed(() => Object.values(this.membersPaid()));
+
+	constructor(private message: NzMessageService) {}
+
+	@ViewChild('errorTpl', { static: true }) errorTpl!: TemplateRef<{
+		$implicit: NzMessageComponent;
+		data: string;
+	  }>;
 
 	onChangeMembersToPay(checked: boolean, member: Member): void {
 		if (checked) {
-			this.membersToPay.update(arr => {
-				const updatedArr = [
-					...arr,
-					{ ...member, amount: 0, percent: 0 }
-				];
-				if (this.splitMode() === 'equal' && this.amount() != null && updatedArr.length > 0) {
-					const splitAmount = this.amount()! / updatedArr.length;
-					const splitPercent = 100 / updatedArr.length;
-					return updatedArr.map(m => ({
-						...m,
-						amount: splitAmount,
-						percent: splitPercent
-					}));
+			this.membersToPay.update(prev => {
+				const updated = {
+					...prev,
+					[ member.id ]: { ...member, amount: 0, percent: 0 }
 				}
-				return updatedArr;
+
+				const memLength = Object.keys( updated ).length
+				if (this.splitMode() === 'equal' && this.amount() != null && memLength > 0) {
+					const splitAmount = this.amount()! / memLength;
+					const splitPercent = 100 / memLength;
+					return Object.fromEntries(
+						Object.entries( updated ).map( ([ key, value ]) => ([key, { ...value, amount: splitAmount, percent: splitPercent }]))
+					);
+				}
+				return updated;
 			});
 		} else {
-			this.membersToPay.update(arr => {
-				const idx = arr.findIndex(m => m.id === member.id);
-				if (idx !== -1) {
-					const newArr = [...arr];
-					newArr.splice(idx, 1);
-					if (this.splitMode() === 'equal' && this.amount() != null && newArr.length > 0) {
-						const splitAmount = this.amount()! / newArr.length;
-						const splitPercent = 100 / newArr.length;
-						return newArr.map(m => ({
-							...m,
-							amount: splitAmount,
-							percent: splitPercent
-						}));
-					}
-					return newArr;
+			this.membersToPay.update(prev => {
+				const { [member.id]: _, ...updated } = prev;
+				const memLength = Object.keys(updated).length;
+
+				if (this.splitMode() === 'equal' && this.amount() != null && memLength > 0) {
+					const splitAmount = this.amount()! / memLength;
+					const splitPercent = 100 / memLength;
+					return Object.fromEntries(
+						Object.entries(updated).map(([key, value]) => [key, { ...value, amount: splitAmount, percent: splitPercent }])
+					);
 				}
-				return arr;
+				return updated;
 			});
 		}
 	}
 
 	onChangeMembersPaid(checked: boolean, member: Member): void {
 		if (checked) {
-			this.membersPaid.update(arr => [...arr, { ...member, amount: 0 }]);
+			this.membersPaid.update(prev => ({
+				...prev,
+				[member.id]: { ...member, amount: 0 }
+			}));
 		} else {
-			this.membersPaid.update(arr => {
-			const idx = arr.findIndex(m => m.id === member.id);
-			if (idx !== -1) {
-				const newArr = [...arr];
-				newArr.splice(idx, 1);
-				return newArr;
-			}
-			return arr;
-		});
+			this.membersPaid.update(prev => {
+				const { [member.id]: _, ...updated } = prev;
+				return updated;
+			});
 		}
 	}
 
 	onAmountPaidChange(newAmount: number, member: Member): void {
-		this.membersPaid.update(arr => {
-			const idx = arr.findIndex(m => m.id === member.id);
-			if (idx !== -1) {
-				const newArr = [...arr];
-				newArr[idx] = { ...newArr[idx], amount: newAmount };
-				return newArr;
-			}
-			return arr;
-		});
+		this.membersPaid.update(prev => ({
+			...prev,
+			[member.id]: { ...prev[member.id], amount: newAmount }
+		}));
 	}
 
 
 	onAmountChange( newAmount: number ): void {
+		this.amount.set( newAmount );
 		const members = this.membersToPay();
-		if (members.length > 1) {
+		const memLength = Object.keys(members).length;
+		if (memLength > 0) {
 			if (this.splitMode() === 'equal') {
-				const splitAmount = newAmount / members.length;
-				const splitPercent = 100 / members.length;
-				this.membersToPay.update(arr =>
-					arr.map(m => ({ ...m, amount: splitAmount, percent: splitPercent }))
+				const splitAmount = newAmount / memLength;
+				const splitPercent = 100 / memLength;
+				this.membersToPay.update(prev =>
+					Object.fromEntries(
+						Object.entries(prev).map(([key, value]) => [key, { ...value, amount: splitAmount, percent: splitPercent }])
+					)
 				);
 			} else {
 				// For other split modes, recalculate percent based on the amount
 				const totalAmount = newAmount;
-				this.membersToPay.update(arr =>
-					arr.map(m => {
-						const amount = m.amount ?? 0;
-						const percent = totalAmount > 0 ? (amount / totalAmount) * 100 : 0;
-						return { ...m, percent };
-					})
+				this.membersToPay.update(prev =>
+					Object.fromEntries(
+						Object.entries(prev).map(([key, value]) => {
+							const amount = value.amount ?? 0;
+							const percent = totalAmount > 0 ? (amount / totalAmount) * 100 : 0;
+							return [key, { ...value, percent }];
+						})
+					)
 				);
 			}
 		}
 	}
 
-	onMemberPercentChange( newPercent: number, index: number ): void {
-		this.membersToPay.update(arr => {
-			if (index < 0 || index >= arr.length) return arr;
-			const newArr = [...arr];
+	onMemberPercentChange( newPercent: number, member: MemberWithAmountPercent ): void {
+		this.membersToPay.update(prev => {
 			const percent = newPercent;
 			const amount = this.amount() ? (this.amount() as number) * (percent / 100) : 0;
-			newArr[index] = { ...newArr[index], percent, amount };
-			return newArr;
+			return {
+				...prev,
+				[member.id]: { ...prev[member.id], percent, amount }
+			};
 		});
 	}
 
-	onMemberAmountChange( newAmount: number, index: number ): void {
-		this.membersToPay.update(arr => {
-			if (index < 0 || index >= arr.length) return arr;
-			const newArr = [...arr];
+	onMemberAmountChange( newAmount: number, member: MemberWithAmountPercent ): void {
+		this.membersToPay.update(prev => {
 			const totalAmount = this.amount() ? (this.amount() as number) : 0;
 			const percent = totalAmount > 0 ? (newAmount / totalAmount) * 100 : 0;
-			newArr[index] = { ...newArr[index], amount: newAmount, percent };
-			return newArr;
+			return {
+				...prev,
+				[member.id]: { ...prev[member.id], amount: newAmount, percent }
+			};
 		});
 	}
 
 	onSplitModeChange( newSplitMode: string ): void {
 		if (newSplitMode === 'equal') {
 			const members = this.membersToPay();
-			const count = members.length;
+			const count = Object.keys(members).length;
 			const totalAmount = this.amount() ?? 0;
 			if (count > 0) {
 				const splitAmount = totalAmount / count;
 				const splitPercent = 100 / count;
-				this.membersToPay.update(arr =>
-					arr.map(m => ({
-						...m,
-						amount: splitAmount,
-						percent: splitPercent
-					}))
+				this.membersToPay.update(prev =>
+					Object.fromEntries(
+						Object.entries(prev).map(([key, value]) => ([key, { ...value, amount: splitAmount, percent: splitPercent }]))
+					)
 				);
 			}
 		}
 	}
 
 	onFormSubmit() {
+
 		const newExpense: Expense = {
 			id: nanoid(),
 			description: this.description() ?? '',
 			amount: this.amount() ?? 0,
 			date: this.date() ?? new Date(),
 			splitMode: this.splitMode() ?? '',
-			membersToPay: this.membersToPay() ?? [],
-			membersPaid: this.membersPaid() ?? []
+			membersToPay: this.membersToPay() ?? {},
+			membersPaid: this.membersPaid() ?? {}
 		}
 		const errors = validateExpense(newExpense);
 
 		if (errors.length > 0) {
-			alert('Please fix the following errors:\n' + errors.join('\n'));
+			this.message.error( this.errorTpl, { nzPauseOnHover: true, nzData: errors.join("\n") });
 			return;
 		}
 
 		this.expenseStore.addExpense(newExpense);
+
+		this.message.success('Expense added successfully');
+		this.description.set('');
+		this.amount.set(null);
+		this.date.set(new Date());
+		this.splitMode.set('equal');
+		this.membersToPay.set({});
+		this.membersPaid.set({});
 	}
 }
