@@ -27,7 +27,7 @@ export const validateExpense = (expense: Expense) => {
 	const amount = expense.amount ?? 0;
 
 	if (Object.keys(expense.membersToPay).length && expense.splitMode === 'custom-percentage') {
-		const totalPercent = Object.values(expense.membersToPay).reduce((sum: number, m: MemberWithAmountPercent) => sum + (typeof m.amount === 'number' ? m.amount : 0), 0);
+		const totalPercent = Object.values(expense.membersToPay).reduce((sum: number, m: MemberWithAmountPercent) => sum + (typeof m.percent === 'number' ? m.percent : 0), 0);
 		if (totalPercent !== 100) {
 			errors.push(`The total percentage assigned to members (${totalPercent}%) must equal 100%.`);
 		}
