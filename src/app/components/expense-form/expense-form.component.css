@@ -1,0 +1,76 @@
+.ss-form-label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+nz-list {
+  margin-top: 8px;
+}
+
+nz-list-header {
+  padding: 4px 0 !important;
+  font-weight: 500;
+}
+
+nz-list-item {
+  padding: 4px 0 !important;
+}
+
+nz-date-picker {
+  display: flex;
+}
+
+.ss-checkable-container {
+  row-gap: 6px !important;
+}
+
+.ss-members-payment-details {
+  font-size: 12px;
+}
+.ss-members-payment-details nz-input-number {
+  width: auto;
+}
+.ss-members-payment-details nz-input-number ::ng-deep input {
+  width: auto;
+  field-sizing: content;
+}
+
+.ss-list-input-number {
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  padding-left: 0;
+}
+.ss-list-input-number::before {
+  display: none;
+}
+.ss-list-input-number ::ng-deep .ant-input-number-input {
+  font-size: 12px;
+}
+.ss-list-input-number ::ng-deep .ant-input-number-suffix {
+  margin: 0;
+  position: relative;
+}
+
+.ant-tag-checkable {
+  background-color: #fafafa;
+  border-color: #d9d9d9;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.ant-tag-checkable-checked {
+  background-color: #1890ff;
+  border-color: transparent;
+}
+
+.ant-segmented-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ant-segmented-item-label {
+  text-wrap: wrap;
+}/*# sourceMappingURL=expense-form.component.css.map */

@@ -1,0 +1,27 @@
+<div class="grid-container">
+	<div class="grid-item-default">
+			<ss-members />
+	</div>
+	<div class="grid-item-large">
+		<nz-card>
+			<nz-card-tab>
+				<nz-tabs nzSize="large" [(nzSelectedIndex)]="expenseSelectedTab">
+					<nz-tab nzTitle="Add Expense"></nz-tab>
+					<nz-tab nzTitle="Expense List"></nz-tab>
+				</nz-tabs>
+			</nz-card-tab>
+			<ng-container [ngComponentOutlet]="expenseTabs[expenseSelectedTab]"></ng-container>
+		</nz-card>
+	</div>
+	<div class="grid-item-default">
+		<nz-card>
+			<nz-card-tab>
+				<nz-tabs nzSize="large" [(nzSelectedIndex)]="settlementSelectedTab">
+					<nz-tab nzTitle="Settlement"></nz-tab>
+					<!-- <nz-tab nzTitle="Payments"></nz-tab> -->
+				</nz-tabs>
+			</nz-card-tab>
+			<ng-container [ngComponentOutlet]="settlementTabs[settlementSelectedTab]"></ng-container>
+		</nz-card>
+	</div>
+</div>

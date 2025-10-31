@@ -1,0 +1,35 @@
+<nz-list nzSize="small">
+	<nz-list-item>
+		<span>Member 1 paid Member 2</span>
+		<div nz-flex [nzGap]="4" nzAlign="center">
+			<span>₱ 250</span>
+			<a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
+				<nz-icon nzType="more" nzTheme="outline" />
+			</a>
+		</div>
+	</nz-list-item>
+	<nz-list-item>
+		<span>Member 2 paid Member 3</span>
+		<div nz-flex [nzGap]="4" nzAlign="center">
+			<span>₱ 250</span>
+			<a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
+				<nz-icon nzType="more" nzTheme="outline" />
+			</a>
+		</div>
+	</nz-list-item>
+	<nz-list-item>
+		<span>Member 3 paid Member 1</span>
+		<div nz-flex [nzGap]="4" nzAlign="center">
+			<span>₱ 250</span>
+			<a nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
+				<nz-icon nzType="more" nzTheme="outline" />
+			</a>
+		</div>
+	</nz-list-item>
+</nz-list>
+<nz-dropdown-menu #menu="nzDropdownMenu">
+	<ul nz-menu>
+		<li nz-menu-item>Edit</li>
+		<li nz-menu-item>Delete</li>
+	</ul>
+</nz-dropdown-menu>

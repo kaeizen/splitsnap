@@ -1,0 +1,40 @@
+<nz-collapse [nzBordered]="false">
+	@for (panel of panels(); track panel) {
+		@if ( panel.id in balance() && Object.keys( balance()[ panel.id ].owes ).length ) {
+			<nz-collapse-panel [nzHeader]="panel.name" [nzActive]="panel.active">
+				<div nz-flex [nzVertical]="true" [nzGap]="8">
+					@if ( Object.keys( balance()[ panel.id ].owes ).length ) {
+						<nz-list nzBordered nzSize="small">
+							<nz-list-header>
+								<span>Owes</span>
+								<!-- <button nz-button nzType="primary" nzSize="small" style="float:right;" >
+									Settle
+								</button> -->
+							</nz-list-header>
+							@for ( item of balance()[ panel.id ].owes | keyvalue; track $index) {
+								<nz-list-item>
+									<span>{{ members()[ item.key ] }}</span>
+									<span>₱ {{ item.value | number:'1.2-2' }}</span>
+								</nz-list-item>
+							}
+						</nz-list>
+					}
+
+					<!--
+					Dev note: Check if this is good to add
+					@if ( Object.keys( balance()[ panel.id ].owed ).length ) {
+						<nz-list nzBordered nzSize="small">
+							<nz-list-header>Is owed by</nz-list-header>
+							@for ( item of balance()[ panel.id ].owed| keyvalue; track $index) {
+								<nz-list-item>
+									<span>{{ members()[ item.key ] }}</span>
+									<span>₱ {{ item.value | number:'1.2-2' }}</span>
+								</nz-list-item>
+							}
+						</nz-list>
+					} -->
+				</div>
+			</nz-collapse-panel>
+		}
+	}
+</nz-collapse>

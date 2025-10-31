@@ -1,0 +1,15 @@
+form {
+  margin-bottom: 16px;
+}
+
+nz-list-item {
+  padding: 4px 0 !important;
+}
+nz-list-item .ant-btn.ant-btn-circle {
+  min-width: 14px;
+  height: 14px;
+  width: 14px;
+}
+nz-list-item .ant-btn.ant-btn-circle nz-icon {
+  font-size: 8px;
+}/*# sourceMappingURL=members.component.css.map */

@@ -1,0 +1,124 @@
+<form nz-form (ngSubmit)="onFormSubmit()">
+	<div nz-row [nzGutter]="[16, 8]">
+		<div class="gutter-row" nz-col [nzSpan]="24" [nzMd]="8">
+			<label for="description" class="ss-form-label">Description:</label>
+			<input type="text" id="description" [(ngModel)]="description" name="description" nz-input placeholder="Snacks" />
+		</div>
+		<div class="gutter-row" nz-col [nzSpan]="24" [nzMd]="8">
+			<label for="amount" class="ss-form-label">Amount:</label>
+			<nz-input-number [style.width.%]="100" nzPlaceHolder="50" [(ngModel)]="amount" name="amount" (ngModelChange)="onAmountChange($event)">
+				<span nzInputPrefix>₱</span>
+			</nz-input-number>
+		</div>
+		<div class="gutter-row" nz-col [nzSpan]="24" [nzMd]="8">
+			<label for="date" class="ss-form-label">Date:</label>
+			<nz-date-picker [(ngModel)]="date" name="date"/>
+		</div>
+		<div class="gutter-row" nz-col [nzSpan]="24">
+			<label for="splitMode" class="ss-form-label">Split Mode:</label>
+			<nz-segmented style="width: 100%;" [(ngModel)]="splitMode" name="splitMode" (ngModelChange)="onSplitModeChange($event)">
+				<label nz-segmented-item nzValue="equal" style="flex-grow: 1;">
+					Equal
+				</label>
+				<label nz-segmented-item nzValue="custom-percentage" style="flex-grow: 1;">
+					Custom (%)
+				</label>
+				<label nz-segmented-item nzValue="custom-amount" style="flex-grow: 1;">
+					Custom (₱)
+				</label>
+			</nz-segmented>
+		</div>
+	</div>
+	@if ( typeof amount() === 'number' && amount()! > 0 ) {
+		<div nz-row [nzGutter]="[32, 8]">
+			<div class="gutter-row" nz-col [nzSpan]="24" [nzMd]="12">
+				<label for="members" class="ss-form-label">Members who need to pay:</label>
+				<div nz-flex [nzWrap]="'wrap'" class="ss-checkable-container">
+					@for ( member of memberStore.members(); track $index ) {
+						<nz-tag nzMode="checkable" [nzChecked]="false" (nzCheckedChange)="onChangeMembersToPay($event, member)">{{ member.name }}</nz-tag>
+					}
+				</div>
+
+				<nz-list nzSize="small" class="ss-members-payment-details">
+					<nz-list-header>
+						<span>Members</span>
+						<span style="float: right;">Amount to Pay</span>
+					</nz-list-header>
+					@for ( member of membersToPayArr(); track $index ) {
+						<nz-list-item>
+							<span>{{ member.name }}</span>
+							@if ( splitMode() === 'custom-percentage' ) {
+								<nz-input-number
+									class="ss-list-input-number"
+									nzPlaceHolder="50"
+									[(ngModel)]="member.percent"
+									[name]="'amountToPay-' + $index"
+									nzVariant="borderless"
+									[nzControls]="false"
+									[nzFormatter]="formatterPercent"
+									[nzParser]="parserPercent"
+									(ngModelChange)="onMemberPercentChange($event, member)"
+
+								>
+									<span nzInputSuffix>
+										(₱ {{ member.amount| number:'1.2-2' }})
+									</span>
+								</nz-input-number>
+							} @else {
+								<nz-input-number
+									class="ss-list-input-number"
+									nzPlaceHolder="50"
+									[(ngModel)]="member.amount"
+									[name]="'amountToPay-' + $index"
+									nzVariant="borderless"
+									[nzControls]="false"
+									(ngModelChange)="onMemberAmountChange($event, member)"
+								>
+									<span nzInputPrefix>₱</span>
+								</nz-input-number>
+							}
+						</nz-list-item>
+					}
+				</nz-list>
+			</div>
+			<div class="gutter-row" nz-col [nzSpan]="24" [nzMd]="12">
+				<label for="members" class="ss-form-label">Members who paid:</label>
+				<div nz-flex [nzWrap]="'wrap'" class="ss-checkable-container">
+					@for ( member of memberStore.members(); track $index ) {
+						<nz-tag nzMode="checkable" [nzChecked]="false" (nzCheckedChange)="onChangeMembersPaid($event, member)">{{ member.name }}</nz-tag>
+					}
+				</div>
+				<nz-list nzSize="small" class="ss-members-payment-details">
+					<nz-list-header>
+						<span>Members</span>
+						<span style="float: right;">Amount Paid</span>
+					</nz-list-header>
+					@for ( member of membersPaidArr(); track $index ) {
+						<nz-list-item>
+							<span>{{ member.name }}</span>
+							<nz-input-number
+								class="ss-list-input-number"
+								nzPlaceHolder="50"
+								[(ngModel)]="member.amount"
+								[name]="'amountPaid-' + $index"
+								nzVariant="borderless"
+								[nzControls]="false"
+								(ngModelChange)="onAmountPaidChange($event, member)">
+								<span nzInputPrefix>₱</span>
+							</nz-input-number>
+						</nz-list-item>
+					}
+				</nz-list>
+			</div>
+		</div>
+	}
+	<div nz-row [nzGutter]="[16, 8]" style="padding-top: 24px !important;">
+		<div class="gutter-row" nz-col [nzSpan]="24">
+			<button nz-button type="submit" nzType="primary" nzBlock [disabled]="!(typeof amount() === 'number' && amount()! > 0)">Add Expense</button>
+		</div>
+	</div>
+</form>
+<ng-template #errorTpl let-data="data">
+	<span>Please fix the following errors:</span>
+	<p [innerHTML]="data" style="margin-bottom: 0;"></p>
+</ng-template>

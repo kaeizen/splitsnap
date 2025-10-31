@@ -1,0 +1,29 @@
+.ant-card-body {
+	padding: 8px 24px;
+}
+
+.ant-collapse-borderless {
+	background-color: transparent;
+}
+nz-collapse {
+	::ng-deep {
+		.ant-collapse-header {
+			padding: 8px 0 !important;
+			font-weight: 500;;
+		}
+		.ant-collapse-content-box {
+			padding: 4px 0 16px;
+		}
+
+		.ant-list {
+			.ant-list-item {
+				padding: 4px 8px;
+			}
+			.ant-list-header {
+				padding: 8px;
+				font-weight: 500;
+			}
+		}
+	}
+}
+
