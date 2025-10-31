@@ -14,13 +14,20 @@
 								</tr>
 							</thead>
 							<tbody>
-								@for (member of members(); track member.id) {
-									@if (expense.membersToPay[member.id] || expense.membersPaid[member.id]) {
+								@for ( member of expense.membersToPay | keyvalue; track member.key) {
 									<tr>
-										<td>{{ member.name }}</td>
-										<td><span nzInputPrefix>₱</span> {{ (  member.id in expense.membersToPay ? expense.membersToPay[member.id].amount : 0 ) | number:'1.2-2' }}</td>
-										<td><span nzInputPrefix>₱</span> {{ ( member.id in expense.membersPaid ? expense.membersPaid[member.id].amount : 0 ) | number:'1.2-2' }}</td>
+										<td>{{ member.value.name }}</td>
+										<td><span nzInputPrefix>₱</span> {{ member.value.amount | number:'1.2-2' }}</td>
+										<td><span nzInputPrefix>₱</span> {{ ( member.key in expense.membersPaid ? expense.membersPaid[member.key].amount : 0 ) | number:'1.2-2' }}</td>
 									</tr>
+								}
+								@for ( member of expense.membersPaid | keyvalue; track member.key) {
+									@if ( ! ( member.key in expense.membersToPay ) ) {
+										<tr>
+											<td>{{ member.value.name }}</td>
+											<td><span nzInputPrefix>₱</span> {{ 0 | number:'1.2-2' }}</td>
+											<td><span nzInputPrefix>₱</span> {{ ( member.value.amount ) | number:'1.2-2' }}</td>
+										</tr>
 									}
 								}
 							</tbody>
@@ -37,12 +44,13 @@
 			   </a>
 		   </div>
 	   </ng-template>
+	   <nz-dropdown-menu #menu="nzDropdownMenu">
+		<ul nz-menu>
+			<!-- <li nz-menu-item>Edit</li> -->
+			<li nz-menu-item (click)="deleteExpense(expense.id)">Delete</li>
+		</ul>
+	</nz-dropdown-menu>
 	}
 </nz-list>
-<nz-dropdown-menu #menu="nzDropdownMenu">
-	<ul nz-menu>
-		<!-- <li nz-menu-item>Edit</li> -->
-		<li nz-menu-item>Delete</li>
-	</ul>
-</nz-dropdown-menu>
+
 

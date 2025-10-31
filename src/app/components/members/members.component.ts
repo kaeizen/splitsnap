@@ -31,6 +31,4 @@ export class MembersComponent {
 	onDelete( id: string ): void {
 		this.store.removeMember( id )
 	}
-
-
 }

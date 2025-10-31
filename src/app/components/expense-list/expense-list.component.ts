@@ -9,11 +9,10 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { ExpenseStore, MemberStore } from '../../store/store';
-import { DatePipe, DecimalPipe } from '@angular/common';
-
+import { DatePipe, DecimalPipe, KeyValuePipe } from '@angular/common';
 @Component({
 	selector: 'ss-expense-list',
-	imports: [NzCollapseModule, NzButtonModule, NzIconModule, NzListModule, NzFlexModule, NzDropDownModule, NzGridModule, NzTableModule, DatePipe, DecimalPipe ],
+	imports: [NzCollapseModule, NzButtonModule, NzIconModule, NzListModule, NzFlexModule, NzDropDownModule, NzGridModule, NzTableModule, DatePipe, DecimalPipe, KeyValuePipe ],
 	templateUrl: './expense-list.component.html',
 	styleUrl: './expense-list.component.scss'
 })
@@ -21,9 +20,13 @@ export class ExpenseListComponent {
 	expenseStore = inject( ExpenseStore );
 	memberStore = inject( MemberStore );
 	expenses = computed( () => this.expenseStore.expenses() );
-	members = computed( () => this.memberStore.members() );
+	members = computed( () => this.memberStore.members().reduce(
+		( output: Record<string, string>, member ) => {
+			output[ member.id ] = member.name
+			return output
+		}, {} ) );
 
-	constructor() {
-		console.log('Expenses:', this.expenses());
+	deleteExpense( expenseId : string ) {
+		this.expenseStore.removeExpense( expenseId )
 	}
 }

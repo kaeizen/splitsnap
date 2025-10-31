@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { MembersComponent, ExpenseFormComponent, ExpenseListComponent, SettlementComponent, PaymentsComponent } from '../components';
+import { MembersComponent, ExpenseFormComponent, ExpenseListComponent, SettlementComponent } from '../components';
 
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
@@ -22,6 +22,6 @@ export class MainComponent {
 	settlementSelectedTab = 0;
 	settlementTabs = [
 		SettlementComponent,
-		PaymentsComponent,
+		// PaymentsComponent,
 	]
 }

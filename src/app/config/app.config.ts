@@ -8,6 +8,9 @@ import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
+import { NzIconModule, provideNzIcons } from 'ng-zorro-antd/icon';
+
+import { MoreOutline, CloseOutline } from '@ant-design/icons-angular/icons';
 
 registerLocaleData(en);
 
@@ -18,6 +21,8 @@ export const appConfig: ApplicationConfig = {
 		provideNzI18n(en_US),
 		importProvidersFrom(FormsModule),
 		provideAnimationsAsync(),
-		provideHttpClient()
+		provideHttpClient(),
+		importProvidersFrom(NzIconModule),
+		provideNzIcons([MoreOutline, CloseOutline])
 	]
 };

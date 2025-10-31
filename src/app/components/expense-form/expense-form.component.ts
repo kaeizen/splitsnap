@@ -28,7 +28,7 @@ import { validateExpense } from './util';
 		NzCardModule, NzButtonModule, NzInputModule,
 		FormsModule, NzListModule, NzInputNumberModule,
 		NzSegmentedModule, NzTagModule, NzDatePickerModule,
-		NzGridModule, NzFlexModule, DecimalPipe, CommonModule
+		NzGridModule, NzFlexModule, CommonModule
 	],
 	templateUrl: './expense-form.component.html',
 	styleUrl: './expense-form.component.scss'
@@ -184,7 +184,6 @@ export class ExpenseFormComponent {
 	}
 
 	onFormSubmit() {
-
 		const newExpense: Expense = {
 			id: nanoid(),
 			description: this.description() ?? '',
@@ -194,12 +193,14 @@ export class ExpenseFormComponent {
 			membersToPay: this.membersToPay() ?? {},
 			membersPaid: this.membersPaid() ?? {}
 		}
+
 		const errors = validateExpense(newExpense);
 
 		if (errors.length > 0) {
 			this.message.error( this.errorTpl, { nzPauseOnHover: true, nzData: errors.join("\n") });
 			return;
 		}
+
 
 		this.expenseStore.addExpense(newExpense);
 

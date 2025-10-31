@@ -16,3 +16,12 @@ export type Expense = {
 	membersPaid: { [ key: string ]: MemberWithAmount }
 }
 
+// Member ID and Amount
+export type Debt = Record<string, number>
+
+// Expense/Member ID and Debts
+export type IDebts = Record<string, Debt>
+
+// Member ID and Expense Debts
+// Structure: { expenseId: { memberId: { memberId: amount } } }
+export type DebtCollection = Record<string, IDebts>
